@@ -1,7 +1,10 @@
-import json
 from http import HTTPStatus
 
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
+
+from shop_be.api.dependencies.services import get_product_type_service
+from shop_be.schemas.category_type.types import ProductTypeSchema
+from shop_be.services.product_type import ProductTypeService
 
 router = APIRouter()
 
@@ -10,21 +13,22 @@ router = APIRouter()
     '/types',
     summary='Get shop types',
     status_code=HTTPStatus.OK,
-    response_model=list,
+    response_model=list[ProductTypeSchema],
 )
-async def get_types() -> dict:
-    with open('shop_be/api/mocks/types.json', 'r') as settings_file:
-        settings = json.loads(settings_file.read())
-    return settings
+async def get_types(
+        type_service: ProductTypeService = Depends(get_product_type_service),
+) -> list[ProductTypeSchema]:
+    return await type_service.get_list()
 
 
 @router.get(
     '/types/{slug}',
-    summary='Get shop types',
+    summary='Get shop types by slug',
     status_code=HTTPStatus.OK,
-    response_model=dict,
+    response_model=ProductTypeSchema,
 )
-async def get_type_by_slug(slug: str) -> dict:
-    with open('shop_be/api/mocks/types.json', 'r') as settings_file:
-        settings = json.loads(settings_file.read())
-    return settings[0]
+async def get_type_by_slug(
+        slug: str,
+        type_service: ProductTypeService = Depends(get_product_type_service),
+) -> ProductTypeSchema:
+    return await type_service.get_by_slug(slug)
