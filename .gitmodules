@@ -1,0 +1,3 @@
+[submodule "db_models"]
+	path = db_models
+	url = https://github.com/harvest-hub-shop/db_models.git

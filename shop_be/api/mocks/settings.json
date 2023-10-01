@@ -1,0 +1,116 @@
+{
+  "id": 1,
+  "options": {
+    "seo": {
+      "ogImage": null,
+      "ogTitle": null,
+      "metaTags": null,
+      "metaTitle": null,
+      "canonicalUrl": null,
+      "ogDescription": null,
+      "twitterHandle": null,
+      "metaDescription": null,
+      "twitterCardType": null
+    },
+    "logo": {
+      "id": 935,
+      "original": "https://pixarlaravel.s3.ap-southeast-1.amazonaws.com/931/pixer_dark.png",
+      "thumbnail": "https://pixarlaravel.s3.ap-southeast-1.amazonaws.com/931/conversions/pixer_dark-thumbnail.jpg"
+    },
+    "useAi": false,
+    "currency": "USD",
+    "smsEvent": {
+      "admin": {
+        "refundOrder": true,
+        "paymentOrder": true,
+        "statusChangeOrder": true
+      },
+      "vendor": {
+        "refundOrder": true,
+        "paymentOrder": true,
+        "statusChangeOrder": true
+      },
+      "customer": {
+        "refundOrder": true,
+        "paymentOrder": true,
+        "statusChangeOrder": true
+      }
+    },
+    "taxClass": "1",
+    "dark_logo": {
+      "id": 936,
+      "original": "https://pixarlaravel.s3.ap-southeast-1.amazonaws.com/932/pixer_light.png",
+      "thumbnail": "https://pixarlaravel.s3.ap-southeast-1.amazonaws.com/932/conversions/pixer_light-thumbnail.jpg"
+    },
+    "defaultAi": "openai",
+    "siteTitle": "Pixer",
+    "emailEvent": {
+      "admin": {
+        "refundOrder": true,
+        "paymentOrder": true,
+        "statusChangeOrder": true
+      },
+      "vendor": {
+        "refundOrder": true,
+        "createReview": true,
+        "paymentOrder": true,
+        "createQuestion": true,
+        "statusChangeOrder": true
+      },
+      "customer": {
+        "refundOrder": true,
+        "paymentOrder": true,
+        "answerQuestion": true,
+        "statusChangeOrder": true
+      }
+    },
+    "server_info": {
+      "memory_limit": "-1",
+      "post_max_size": 8192,
+      "max_input_time": "-1",
+      "max_execution_time": "0",
+      "upload_max_filesize": 2048
+    },
+    "signupPoints": 100,
+    "siteSubtitle": "Your next ecommerce",
+    "useGoogleMap": false,
+    "StripeCardOnly": true,
+    "contactDetails": {
+      "contact": "+161649646591, +5454645431",
+      "socials": [],
+      "website": "https://redq.io/",
+      "location": {
+        "lat": 48.2016556,
+        "lng": 16.3378535,
+        "zip": "1070",
+        "city": "Wien",
+        "state": "Wien",
+        "country": "Austria",
+        "formattedAddress": "Urban-Loritz-Platz, 1070 Wien, Austria"
+      }
+    },
+    "paymentGateway": [
+      {
+        "name": "stripe",
+        "title": "Stripe"
+      },
+      {
+        "name": "paypal",
+        "title": "Paypal"
+      }
+    ],
+    "currencyOptions": {
+      "formation": "en-US",
+      "fractions": 2
+    },
+    "isProductReview": false,
+    "useEnableGateway": true,
+    "minimumOrderAmount": null,
+    "maximumQuestionLimit": 5,
+    "currencyToWalletRatio": 3,
+    "defaultPaymentGateway": "stripe"
+  },
+  "language": "en",
+  "created_at": "2023-07-26T08:34:17.000Z",
+  "updated_at": "2023-07-26T08:34:17.000Z"
+}
