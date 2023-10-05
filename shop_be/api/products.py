@@ -1,32 +1,35 @@
-import json
 from http import HTTPStatus
 
-from fastapi import APIRouter
+from fastapi import APIRouter, Depends
 
-from shop_be.api.dependencies.paginate import paginate
+from shop_be.api.dependencies.services import get_product_service
+from shop_be.api.pagination.product import paginate_products
+from shop_be.schemas.shop.product import ProductPaginationRequest, ProductSchema, PaginatedProduct
+from shop_be.services.product import ProductService
 
 router = APIRouter()
 
 
 @router.get(
     '/products',
-    summary='Get shop types',
+    summary='Get list of products',
     status_code=HTTPStatus.OK,
-    response_model=dict,
+    response_model=PaginatedProduct,
 )
-async def get_products() -> dict:
-    with open('shop_be/api/mocks/products.json', 'r') as settings_file:
-        settings = json.loads(settings_file.read())
-    return paginate(settings)
+async def get_products(
+        query_params: ProductPaginationRequest = Depends(),
+        product_service: ProductService = Depends(get_product_service),
+) -> PaginatedProduct:
+    products = await product_service.get_list(query_params)
+    total_count = await product_service.get_count(query_params)
+    return paginate_products(products, total_count, query_params)
 
 
 @router.get(
     '/products/{slug}',
     summary='Get shop types',
     status_code=HTTPStatus.OK,
-    response_model=dict,
+    response_model=ProductSchema,
 )
-async def get_product(slug: str) -> dict:
-    with open('shop_be/api/mocks/products.json', 'r') as settings_file:
-        settings = json.loads(settings_file.read())
-    return settings[0]
+async def get_product(slug: str, product_service: ProductService = Depends(get_product_service)) -> ProductSchema:
+    return await product_service.get_by_slug(slug)

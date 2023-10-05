@@ -1,5 +1,6 @@
 from enum import Enum
 
+from pydantic import AnyHttpUrl
 from pydantic_settings import BaseSettings
 
 
@@ -22,6 +23,8 @@ class Settings(BaseSettings):
     DB_NAME: str = 'g50'
     DB_HOST: str = 'localhost'
     DB_DRIVER: str = 'postgresql+asyncpg'
+
+    WEB_URL: AnyHttpUrl = 'https://example.com'
 
     @property
     def sqlalchemy_database_uri(self) -> str:

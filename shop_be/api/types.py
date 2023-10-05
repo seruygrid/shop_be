@@ -3,7 +3,7 @@ from http import HTTPStatus
 from fastapi import APIRouter, Depends
 
 from shop_be.api.dependencies.services import get_product_type_service
-from shop_be.schemas.category_type.types import ProductTypeSchema
+from shop_be.schemas.category.types import ProductTypeSchema
 from shop_be.services.product_type import ProductTypeService
 
 router = APIRouter()
