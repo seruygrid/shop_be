@@ -23,11 +23,11 @@ class ProductService(BaseService[Product]):
             selectinload(self.MODEL.gallery),
             selectinload(self.MODEL.rating_count),
             selectinload(self.MODEL.categories),
-        )
+        ).limit(query_params.limit).offset(query_params.first)
         return await self.fetch_all(query)
 
     async def get_count(self, query_params: ProductPaginationRequest) -> int:
-        query = query_params.filter_query(select(count(self.MODEL.id)), is_paginate=False)
+        query = query_params.filter_query(select(count(self.MODEL.id)))
         return await self.session.scalar(query)
 
     async def get_by_slug(self, slug: str) -> 'Product':

@@ -19,4 +19,3 @@ class BaseCategorySchema(BaseModel):
     updated_at: datetime
     deleted_at: str | None = None
     parent_id: int
-

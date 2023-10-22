@@ -100,7 +100,7 @@ async def clear_db(db_session: 'AsyncSession') -> AsyncGenerator[None, None]:
 
 @pytest.fixture(scope='session')
 async def client(app: 'FastAPI') -> AsyncGenerator[AsyncClient, None]:
-    async with AsyncClient(app=app, base_url=f'http://test/api/') as http_client:
+    async with AsyncClient(app=app, base_url='http://test/api/') as http_client:
         yield http_client
 
 

@@ -74,13 +74,11 @@ class ProductPaginationRequest(BaseModel):
     limit: int = 30
     page: int = 1
 
-    def filter_query(self, query: Query, is_paginate: bool = True) -> Query:
+    def filter_query(self, query: Query) -> Query:
         if self.search:
             query = query.filter(Product.name.like(f'%{self.search}%'))
         if self.language:
             query = query.filter(Product.language == self.language)
-        # if is_paginate:
-        #     query = query.limit(self.limit).offset(self.first)
         return query
 
 
