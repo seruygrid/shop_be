@@ -7,7 +7,7 @@ from starlette.middleware.cors import CORSMiddleware
 from db_models.db_models import metadata
 from shop_be.conf.db import async_session
 from shop_be.conf.settings import settings, Settings
-from shop_be.api import settings as api_settings, base, types, categories, products
+from shop_be.api import settings as api_settings, base, types, categories, products, shops
 from shop_be.exception_handlers import init_exception_handlers
 
 logger = logging.getLogger(__name__)
@@ -17,6 +17,7 @@ def init_routes(app: 'FastAPI') -> None:
     """Connect routes to app"""
     app.include_router(base.router, tags=['Base'], prefix='/api')
     app.include_router(types.router, tags=['Types'], prefix='/api')
+    app.include_router(shops.router, tags=['Shops'], prefix='/api')
     app.include_router(products.router, tags=['Products'], prefix='/api')
     app.include_router(categories.router, tags=['Categories'], prefix='/api')
     app.include_router(api_settings.router, tags=['Settings'], prefix='/api')

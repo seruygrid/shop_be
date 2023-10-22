@@ -13,7 +13,7 @@ class Env(str, Enum):
 
 class Settings(BaseSettings):
     PORT: int = 4000
-    ALLOWED_ORIGINS: str = 'http://localhost http://localhost:8080'
+    ALLOWED_ORIGINS: str = 'http://localhost http://localhost:3003'
     DEBUG: bool = True
     ENV: Env = Env.LOCAL
 

@@ -5,6 +5,7 @@ from pydantic import BaseModel, Field
 
 from db_models.db_models import Product
 from shop_be.schemas.category.category import CategorySchema
+from shop_be.schemas.category.types import ProductTypeSchema
 from shop_be.schemas.image import ImageSchema
 from shop_be.schemas.paginate import Paginate
 from shop_be.schemas.rating.rating import RatingCount
@@ -38,8 +39,8 @@ class ProductSchema(BaseModel):
     video: str | None = None
     gallery: list[ImageSchema]
     deleted_at: str | None = None
-    created_at: str
-    updated_at: str
+    created_at: datetime
+    updated_at: datetime
     author_id: int | None = None
     manufacturer_id: int | None = None
     is_digital: int
@@ -51,12 +52,15 @@ class ProductSchema(BaseModel):
     rating_count: list[RatingCount]
     my_review: str | None = None
     in_wishlist: bool
-    blocked_dates: list[str]
+    blocked_dates: list[str] | None
     translated_languages: list[str]
     categories: list[CategorySchema]
     shop: ShopSchema
-    type: dict
+    type: ProductTypeSchema
     related_products: list | None = []
+
+    class Config:
+        from_attributes = True
 
 
 class ProductPaginationRequest(BaseModel):
@@ -66,17 +70,17 @@ class ProductPaginationRequest(BaseModel):
     search: str | None = None
     date_range: datetime | None = None
     language: str | None = None
-    first: int = 1
+    first: int = 0
     limit: int = 30
     page: int = 1
 
     def filter_query(self, query: Query, is_paginate: bool = True) -> Query:
-        if not self.search:
+        if self.search:
             query = query.filter(Product.name.like(f'%{self.search}%'))
         if self.language:
             query = query.filter(Product.language == self.language)
-        if is_paginate:
-            query = query.limit(self.limit).offset(self.first)
+        # if is_paginate:
+        #     query = query.limit(self.limit).offset(self.first)
         return query
 
 

@@ -8,6 +8,7 @@ class Paginate(BaseModel):
     count: int
     last_page: int
     firstItem: int
+    lastItem: int
     per_page: int
     first_page_url: AnyHttpUrl
     last_page_url: AnyHttpUrl

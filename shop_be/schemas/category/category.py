@@ -1,26 +1,39 @@
 from pydantic import BaseModel, Field
-from sqlalchemy import Select
+from sqlalchemy import Select, text
 
 from db_models.db_models import Category
-from shop_be.schemas.image import ImageSchema
+from shop_be.schemas.category.base import BaseCategorySchema
+from shop_be.schemas.category.types import CategoryTypeSchema
 from shop_be.schemas.paginate import Paginate
 
 
-class CategorySchema(BaseModel):
-    id: int
-    name: str
-    slug: str
-    language: str
-    icon: str | None = None
-    image: ImageSchema | None = None
-    details: str | None = None
-    parent: int
-    type_id: int
-    created_at: str
-    updated_at: str
-    deleted_at: str | None = None
+class ParentCategorySchema(BaseCategorySchema):
+    parent_id: int | None = None
+
+    class Config:
+        from_attributes = True
+
+
+class ChildrenCategorySchema(BaseCategorySchema):
+    parent: ParentCategorySchema
+    products_count: int
     parent_id: int
-    translated_languages: list[str]
+    children: list = []
+    products_count: int = 100
+
+    class Config:
+        from_attributes = True
+
+
+class CategorySchema(BaseCategorySchema):
+    parent: None = None
+    parent_id: int | None = None
+    type: CategoryTypeSchema
+    children: list[ChildrenCategorySchema]
+    products_count: int = 100
+
+    class Config:
+        from_attributes = True
 
 
 class CategoryPaginationRequest(BaseModel):
@@ -28,17 +41,17 @@ class CategoryPaginationRequest(BaseModel):
     sorted_by: str | None = Field(None, alias='sortedBy')
     search: str | None = None
     language: str | None = None
-    first: int = 1
-    limit: int = 30
+    first: int = 0
+    limit: int = 15
     page: int = 1
 
-    def filter_query(self, query: Select, is_paginate: bool = True) -> Select:
-        if not self.search:
-            query = query.filter(Category.name.like(f'%{self.search}%'))
+    def filter_query(self, query: Select) -> Select:
+        if self.search:
+            query = query.filter(Category.name == self.search)
         if self.language:
             query = query.filter(Category.language == self.language)
-        if is_paginate:
-            query = query.limit(self.limit).offset(self.first)
+        if self.order_by and self.sorted_by:
+            query = query.order_by(text(f'{self.order_by} {self.sorted_by}')).group_by(text(self.order_by))
         return query
 
 

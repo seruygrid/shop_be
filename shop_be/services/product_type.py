@@ -10,11 +10,17 @@ class ProductTypeService(BaseService[ProductType]):
     MODEL = ProductType
 
     async def get_list(self) -> list[ProductType]:
-        query = select(self.MODEL).options(selectinload(self.MODEL.banners).selectinload(Banner.image), )
+        query = select(self.MODEL).options(
+            selectinload(self.MODEL.banners).selectinload(Banner.image),
+            selectinload(self.MODEL.promotional_sliders),
+        )
         return await self.fetch_all(query)
 
     async def get_by_slug(self, slug: str) -> ProductType:
-        options = (selectinload(self.MODEL.banners).selectinload(Banner.image),)
+        options = (
+            selectinload(self.MODEL.banners).selectinload(Banner.image),
+            selectinload(self.MODEL.promotional_sliders),
+        )
         obj = await self.fetch_one(filters=(self.MODEL.slug == slug,), options=options)
         if not obj:
             raise DoesNotExistException('Product type does not exist.')

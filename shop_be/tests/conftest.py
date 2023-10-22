@@ -2,7 +2,7 @@ import asyncio
 import time
 from typing import TYPE_CHECKING, Generator, AsyncGenerator
 
-import pytest_asyncio
+import pytest
 import sqlalchemy as sa
 from httpx import AsyncClient
 from sqlalchemy import create_engine, text
@@ -13,6 +13,7 @@ from db_models.db_models import metadata, Base
 from shop_be.app import create_app
 from shop_be.conf.db import session_factory, async_session
 from shop_be.conf.settings import Settings, settings
+from shop_be.tests.factories import FACTORIES
 
 if TYPE_CHECKING:
     from asyncio import AbstractEventLoop
@@ -32,17 +33,17 @@ async def _drop_test_db(engine: 'AsyncEngine', new_db_name: str):
         await conn.execute(sa.text('DROP DATABASE %s' % new_db_name))
 
 
-@pytest_asyncio.fixture(scope='session')
+@pytest.fixture(scope='session')
 def test_db_name() -> str:
     return f'harvest_hub_tests_{int(time.time())}'
 
 
-@pytest_asyncio.fixture(scope='session')
+@pytest.fixture(scope='session')
 def test_settings(test_db_name: str) -> Settings:
     return Settings(DB_NAME=test_db_name)
 
 
-@pytest_asyncio.fixture(scope='session')
+@pytest.fixture(scope='session')
 async def sync_engine(test_settings: Settings) -> AsyncGenerator:
     test_settings.DB_DRIVER = 'postgresql'
     engine = create_engine(url=test_settings.sqlalchemy_database_uri)
@@ -51,7 +52,7 @@ async def sync_engine(test_settings: Settings) -> AsyncGenerator:
     yield engine
 
 
-@pytest_asyncio.fixture(scope='session', autouse=True)
+@pytest.fixture(scope='session', autouse=True)
 async def init_test_db(
         test_settings: Settings,
         test_db_name: str,
@@ -73,37 +74,37 @@ async def init_test_db(
     await _drop_test_db(engine, test_db_name)
 
 
-@pytest_asyncio.fixture(scope='session')
+@pytest.fixture(scope='session')
 def app(test_settings: Settings) -> 'FastAPI':
     return create_app(test_settings)
 
 
-@pytest_asyncio.fixture(scope='session')
-async def async_db_session(app: 'FastAPI') -> AsyncGenerator['AsyncSession', None]:
+@pytest.fixture(scope='function')
+async def db_session(app: 'FastAPI') -> AsyncGenerator['AsyncSession', None]:
     async with async_session() as session:
-        # for factory_ in FACTORIES:
-        #     factory_._meta.sqlalchemy_session = session
+        for factory_ in FACTORIES:
+            factory_._meta.sqlalchemy_session = session
 
         yield session
 
 
-@pytest_asyncio.fixture(scope='function', autouse=True)
-async def clear_db(async_db_session: 'AsyncSession') -> AsyncGenerator[None, None]:
+@pytest.fixture(scope='function', autouse=True)
+async def clear_db(db_session: 'AsyncSession') -> AsyncGenerator[None, None]:
     yield
 
-    await async_db_session.execute(text('TRUNCATE {} RESTART IDENTITY;'.format(
+    await db_session.execute(text('TRUNCATE {} RESTART IDENTITY;'.format(
         ','.join(table.name
                  for table in reversed(Base.metadata.sorted_tables)))))
-    await async_db_session.commit()
+    await db_session.commit()
 
 
-@pytest_asyncio.fixture(scope='session')
+@pytest.fixture(scope='session')
 async def client(app: 'FastAPI') -> AsyncGenerator[AsyncClient, None]:
     async with AsyncClient(app=app, base_url=f'http://test/api/') as http_client:
         yield http_client
 
 
-@pytest_asyncio.fixture(scope='session')
+@pytest.fixture(scope='session')
 def event_loop() -> Generator['AbstractEventLoop', None, None]:
     loop = asyncio.get_event_loop()
     yield loop
