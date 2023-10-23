@@ -17,7 +17,9 @@ async def test_get_products(client: 'AsyncClient', db_session: 'AsyncSession', t
     for product in products:
         RatingFactory(product=product)
     await db_session.commit()
+
     response = await client.get('/products')
+
     assert response.status_code == HTTPStatus.OK
     response_data = response.json()
     assert tuple(response_data.keys()) == (
@@ -72,7 +74,9 @@ async def test_get_product_with_sorting(client: 'AsyncClient', db_session: 'Asyn
     for product in products:
         RatingFactory(product=product)
     await db_session.commit()
+
     response = await client.get('/products', params={'orderBy': 'id', 'sortedBy': 'desc'})
+
     assert response.status_code == HTTPStatus.OK
     response_data = response.json()
     assert tuple(response_data.keys()) == (
@@ -92,7 +96,9 @@ async def test_get_products_with_search(client: 'AsyncClient', db_session: 'Asyn
     for product in products:
         RatingFactory(product=product)
     await db_session.commit()
+
     response = await client.get('/products', params={'search': products[0].name})
+
     assert response.status_code == HTTPStatus.OK
     response_data = response.json()
     assert tuple(response_data.keys()) == (
@@ -111,7 +117,9 @@ async def test_get_products_with_language(client: 'AsyncClient', db_session: 'As
     for product in products:
         RatingFactory(product=product)
     await db_session.commit()
+
     response = await client.get('/products', params={'language': products[0].language})
+
     assert response.status_code == HTTPStatus.OK
     response_data = response.json()
     assert tuple(response_data.keys()) == (

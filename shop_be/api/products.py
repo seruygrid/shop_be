@@ -27,9 +27,12 @@ async def get_products(
 
 @router.get(
     '/products/{slug}',
-    summary='Get shop types',
+    summary='Get product by slug',
     status_code=HTTPStatus.OK,
     response_model=ProductSchema,
 )
-async def get_product(slug: str, product_service: ProductService = Depends(get_product_service)) -> ProductSchema:
+async def get_product(
+        slug: str,
+        product_service: ProductService = Depends(get_product_service),
+) -> ProductSchema:
     return await product_service.get_by_slug(slug)

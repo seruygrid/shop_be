@@ -6,6 +6,7 @@ from pydantic import BaseModel, HttpUrl, Field
 from db_models.db_models import Shop
 from shop_be.schemas.image import ImageSchema
 from shop_be.schemas.paginate import Paginate
+from shop_be.schemas.shop.owner import ShopOwnerSchema
 
 
 class LocationSchema(BaseModel):
@@ -41,7 +42,7 @@ class AddressSchema(BaseModel):
         from_attributes = True
 
 
-class ShopSchema(BaseModel):
+class BaseShopSchema(BaseModel):
     id: int
     owner_id: int
     name: str
@@ -59,19 +60,23 @@ class ShopSchema(BaseModel):
         from_attributes = True
 
 
+class ShopSchema(BaseShopSchema):
+    orders_count: int = 100
+    products_count: int = 100
+    owner: ShopOwnerSchema
+
+
 class ShopPaginationRequest(BaseModel):
     order_by: str | None = Field(None, alias='orderBy')
     sorted_by: str | None = Field(None, alias='sortedBy')
     search: str | None = None
     first: int = 0
-    limit: int = 30
+    limit: int = 15
     page: int = 1
 
-    def filter_query(self, query: Query, is_paginate: bool = True) -> Query:
+    def filter_query(self, query: Query) -> Query:
         if self.search:
-            query = query.filter(Shop.name.like(f'%{self.search}%'))
-        # if is_paginate:
-        #     query = query.limit(self.limit).offset(self.first)
+            query = query.filter(Shop.name == self.search)
         return query
 
 

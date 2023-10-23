@@ -14,7 +14,9 @@ async def test_get_categories(client: 'AsyncClient', db_session: 'AsyncSession',
     count = 20
     ChildCategoryFactory.create_batch(count)
     await db_session.commit()
+
     response = await client.get('/categories')
+
     assert response.status_code == HTTPStatus.OK
     response_data = response.json()
     assert tuple(response_data.keys()) == (
@@ -55,7 +57,9 @@ async def test_get_categories_with_sorting(client: 'AsyncClient', db_session: 'A
     count = 20
     ChildCategoryFactory.create_batch(count)
     await db_session.commit()
+
     response = await client.get('/categories', params={'orderBy': 'id', 'sortedBy': 'desc'})
+
     assert response.status_code == HTTPStatus.OK
     response_data = response.json()
     assert tuple(response_data.keys()) == (
@@ -72,7 +76,9 @@ async def test_get_categories_with_search(client: 'AsyncClient', db_session: 'As
     count = 10
     child = ChildCategoryFactory.create_batch(count)
     await db_session.commit()
+
     response = await client.get('/categories', params={'search': child[0].parent.name})
+
     assert response.status_code == HTTPStatus.OK
     response_data = response.json()
     assert tuple(response_data.keys()) == (
@@ -88,7 +94,9 @@ async def test_get_categories_with_language(client: 'AsyncClient', db_session: '
     count = 10
     child = ChildCategoryFactory.create_batch(count)
     await db_session.commit()
+
     response = await client.get('/categories', params={'language': child[0].parent.language})
+
     assert response.status_code == HTTPStatus.OK
     response_data = response.json()
     assert tuple(response_data.keys()) == (

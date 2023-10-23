@@ -10,7 +10,7 @@ from shop_be.schemas.category.types import BaseProductTypeSchema
 from shop_be.schemas.image import ImageSchema
 from shop_be.schemas.paginate import Paginate
 from shop_be.schemas.rating.rating import RatingCount
-from shop_be.schemas.shop.shop import ShopSchema
+from shop_be.schemas.shop.shop import BaseShopSchema
 
 
 class ProductSchema(BaseModel):
@@ -56,7 +56,7 @@ class ProductSchema(BaseModel):
     blocked_dates: list[str] | None
     translated_languages: list[str]
     categories: list[ProductCategorySchema]
-    shop: ShopSchema
+    shop: BaseShopSchema
     type: BaseProductTypeSchema
     variations: list = []
     metas: list = []
