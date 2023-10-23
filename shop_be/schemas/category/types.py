@@ -11,20 +11,23 @@ class Settings(BaseModel):
     productCard: str
 
 
-class CategoryTypeSchema(BaseModel):
+class BaseCategoryTypeSchema(BaseModel):
     id: int
     name: str
     language: str
     translated_languages: list[str] = ['en']
-    settings: Settings
     slug: str
     icon: str
-    promotional_sliders: list[ImageSchema]
     created_at: datetime
     updated_at: datetime
 
     class Config:
         from_attributes = True
+
+
+class CategoryTypeSchema(BaseCategoryTypeSchema):
+    settings: Settings
+    promotional_sliders: list[ImageSchema]
 
 
 class BannerSchema(BaseModel):
@@ -40,7 +43,7 @@ class BannerSchema(BaseModel):
         from_attributes = True
 
 
-class ProductTypeSchema(BaseModel):
+class BaseProductTypeSchema(BaseModel):
     id: int
     name: str
     settings: Settings
@@ -51,7 +54,10 @@ class ProductTypeSchema(BaseModel):
     created_at: datetime
     updated_at: datetime
     translated_languages: list[str] = ['en']
-    banners: list[BannerSchema]
 
     class Config:
         from_attributes = True
+
+
+class ProductTypeSchema(BaseModel):
+    banners: list[BannerSchema]

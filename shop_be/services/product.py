@@ -15,7 +15,6 @@ class ProductService(BaseService[Product]):
     async def get_list(self, query_params: ProductPaginationRequest) -> list['Product']:
         query = query_params.filter_query(select(self.MODEL)).options(
             selectinload(self.MODEL.type).selectinload(ProductType.promotional_sliders),
-            selectinload(self.MODEL.type).selectinload(ProductType.banners),
             selectinload(self.MODEL.shop).selectinload(Shop.cover_image),
             selectinload(self.MODEL.shop).selectinload(Shop.logo),
             selectinload(self.MODEL.shop).selectinload(Shop.address),
@@ -23,6 +22,7 @@ class ProductService(BaseService[Product]):
             selectinload(self.MODEL.gallery),
             selectinload(self.MODEL.rating_count),
             selectinload(self.MODEL.categories),
+            selectinload(self.MODEL.image),
         ).limit(query_params.limit).offset(query_params.first)
         return await self.fetch_all(query)
 

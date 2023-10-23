@@ -7,11 +7,12 @@ from shop_be.schemas.category.types import CategoryTypeSchema
 from shop_be.schemas.paginate import Paginate
 
 
+class ProductCategorySchema(BaseCategorySchema):
+    parent: int | None = Field(None, alias='parent_id')
+
+
 class ParentCategorySchema(BaseCategorySchema):
     parent_id: int | None = None
-
-    class Config:
-        from_attributes = True
 
 
 class ChildrenCategorySchema(BaseCategorySchema):
@@ -21,9 +22,6 @@ class ChildrenCategorySchema(BaseCategorySchema):
     children: list = []
     products_count: int = 100
 
-    class Config:
-        from_attributes = True
-
 
 class CategorySchema(BaseCategorySchema):
     parent: None = None
@@ -31,9 +29,6 @@ class CategorySchema(BaseCategorySchema):
     type: CategoryTypeSchema
     children: list[ChildrenCategorySchema]
     products_count: int = 100
-
-    class Config:
-        from_attributes = True
 
 
 class CategoryPaginationRequest(BaseModel):

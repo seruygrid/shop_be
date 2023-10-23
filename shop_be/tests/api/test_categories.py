@@ -11,7 +11,7 @@ if TYPE_CHECKING:
 
 async def test_get_categories(client: 'AsyncClient', db_session: 'AsyncSession', test_settings: 'Settings') -> None:
     """Test get categories endpoint"""
-    count = 50
+    count = 20
     ChildCategoryFactory.create_batch(count)
     await db_session.commit()
     response = await client.get('/categories')
@@ -25,12 +25,12 @@ async def test_get_categories(client: 'AsyncClient', db_session: 'AsyncSession',
     assert response_data['total'] == count
     assert response_data['current_page'] == 1
     assert response_data['count'] == 15
-    assert response_data['last_page'] == 4
+    assert response_data['last_page'] == 2
     assert response_data['firstItem'] == 0
     assert response_data['lastItem'] == 14
     assert response_data['per_page'] == 15
     assert response_data['first_page_url'] == str(test_settings.WEB_URL) + 'api/categories?first=0&limit=15&page=1'
-    assert response_data['last_page_url'] == str(test_settings.WEB_URL) + 'api/categories?first=0&limit=15&page=4'
+    assert response_data['last_page_url'] == str(test_settings.WEB_URL) + 'api/categories?first=0&limit=15&page=2'
     assert response_data['next_page_url'] == str(test_settings.WEB_URL) + 'api/categories?first=0&limit=15&page=2'
     assert response_data['prev_page_url'] == str(test_settings.WEB_URL) + 'api/categories?first=0&limit=15&page=1'
 
@@ -40,8 +40,8 @@ async def test_get_categories(client: 'AsyncClient', db_session: 'AsyncSession',
         'updated_at', 'deleted_at', 'parent_id', 'parent', 'type', 'children', 'products_count',
     )
     assert tuple(category['type'].keys()) == (
-        'id', 'name', 'language', 'translated_languages', 'settings', 'slug', 'icon', 'promotional_sliders',
-        'created_at', 'updated_at'
+        'id', 'name', 'language', 'translated_languages', 'slug', 'icon', 'created_at', 'updated_at', 'settings',
+        'promotional_sliders'
     )
     assert len(category['children']) == 1
     assert tuple(category['children'][0].keys()) == (
@@ -52,7 +52,7 @@ async def test_get_categories(client: 'AsyncClient', db_session: 'AsyncSession',
 
 async def test_get_categories_with_sorting(client: 'AsyncClient', db_session: 'AsyncSession') -> None:
     """Test get categories endpoint"""
-    count = 50
+    count = 20
     ChildCategoryFactory.create_batch(count)
     await db_session.commit()
     response = await client.get('/categories', params={'orderBy': 'id', 'sortedBy': 'desc'})
@@ -63,8 +63,8 @@ async def test_get_categories_with_sorting(client: 'AsyncClient', db_session: 'A
         'last_page_url', 'next_page_url', 'prev_page_url',
     )
     assert len(response_data['data']) == 15
-    assert response_data['data'][0]['id'] == 99
-    assert response_data['data'][-1]['id'] == 85
+    assert response_data['data'][0]['id'] == 39
+    assert response_data['data'][-1]['id'] == 25
 
 
 async def test_get_categories_with_search(client: 'AsyncClient', db_session: 'AsyncSession') -> None:

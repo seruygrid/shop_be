@@ -2,10 +2,11 @@ from datetime import datetime
 
 from fastapi import Query
 from pydantic import BaseModel, Field
+from sqlalchemy import text
 
 from db_models.db_models import Product
-from shop_be.schemas.category.category import CategorySchema
-from shop_be.schemas.category.types import ProductTypeSchema
+from shop_be.schemas.category.category import ProductCategorySchema
+from shop_be.schemas.category.types import BaseProductTypeSchema
 from shop_be.schemas.image import ImageSchema
 from shop_be.schemas.paginate import Paginate
 from shop_be.schemas.rating.rating import RatingCount
@@ -54,10 +55,14 @@ class ProductSchema(BaseModel):
     in_wishlist: bool
     blocked_dates: list[str] | None
     translated_languages: list[str]
-    categories: list[CategorySchema]
+    categories: list[ProductCategorySchema]
     shop: ShopSchema
-    type: ProductTypeSchema
-    related_products: list | None = []
+    type: BaseProductTypeSchema
+    variations: list = []
+    metas: list = []
+    manufacturer: None = None
+    variation_options: list = []
+    tags: list = []
 
     class Config:
         from_attributes = True
@@ -71,14 +76,16 @@ class ProductPaginationRequest(BaseModel):
     date_range: datetime | None = None
     language: str | None = None
     first: int = 0
-    limit: int = 30
+    limit: int = 15
     page: int = 1
 
     def filter_query(self, query: Query) -> Query:
         if self.search:
-            query = query.filter(Product.name.like(f'%{self.search}%'))
+            query = query.filter(Product.name == self.search)
         if self.language:
             query = query.filter(Product.language == self.language)
+        if self.order_by and self.sorted_by:
+            query = query.order_by(text(f'{self.order_by} {self.sorted_by}')).group_by(text(self.order_by))
         return query
 
 

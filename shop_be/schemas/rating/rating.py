@@ -8,3 +8,6 @@ class RatingCount(BaseModel):
     negative_feedbacks_count: int
     my_feedback: str | None = None
     abusive_reports_count: int
+
+    class Config:
+        from_attributes = True

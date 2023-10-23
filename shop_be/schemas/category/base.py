@@ -18,4 +18,7 @@ class BaseCategorySchema(BaseModel):
     created_at: datetime
     updated_at: datetime
     deleted_at: str | None = None
-    parent_id: int
+    parent_id: int | None = None
+
+    class Config:
+        from_attributes = True

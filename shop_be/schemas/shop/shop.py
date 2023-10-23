@@ -9,8 +9,8 @@ from shop_be.schemas.paginate import Paginate
 
 
 class LocationSchema(BaseModel):
-    lat: float
-    lng: float
+    lat: str
+    lng: str
     city: str
     state: str
     country: str
