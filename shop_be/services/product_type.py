@@ -2,6 +2,7 @@ from sqlalchemy import select
 from sqlalchemy.orm import selectinload
 
 from db_models.db_models import ProductType, Banner
+from shop_be.conf.constants import ErrorMessages
 from shop_be.exceptions import DoesNotExistException
 from shop_be.services.base import BaseService
 
@@ -23,5 +24,5 @@ class ProductTypeService(BaseService[ProductType]):
         )
         obj = await self.fetch_one(filters=(self.MODEL.slug == slug,), options=options)
         if not obj:
-            raise DoesNotExistException('Product type does not exist.')
+            raise DoesNotExistException(ErrorMessages.PRODUCT_TYPE_DOES_NOT_EXIST)
         return obj

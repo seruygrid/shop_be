@@ -11,7 +11,7 @@ router = APIRouter()
 
 @router.get(
     '/types',
-    summary='Get shop types',
+    summary='Get category types',
     status_code=HTTPStatus.OK,
     response_model=list[ProductTypeSchema],
 )
@@ -23,7 +23,7 @@ async def get_types(
 
 @router.get(
     '/types/{slug}',
-    summary='Get shop types by slug',
+    summary='Get category types by slug',
     status_code=HTTPStatus.OK,
     response_model=ProductTypeSchema,
 )

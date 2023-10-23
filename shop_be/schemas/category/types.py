@@ -59,5 +59,5 @@ class BaseProductTypeSchema(BaseModel):
         from_attributes = True
 
 
-class ProductTypeSchema(BaseModel):
+class ProductTypeSchema(BaseProductTypeSchema):
     banners: list[BannerSchema]
