@@ -1,5 +1,5 @@
 import datetime
-from typing import TYPE_CHECKING, Generic, Type, Sequence, Dict, Optional, List, TypeVar
+from typing import TYPE_CHECKING, Generic, Type, Sequence, Dict, Optional, TypeVar
 
 from sqlalchemy import select, update, exists, Select
 from sqlalchemy.orm import Query
@@ -23,15 +23,15 @@ class BaseService(Generic[ModelT]):
         query = select(self.MODEL).filter(*filters).options(*options).limit(1)
         return await self.session.scalar(query)
 
-    async def fetch_all(self, query: Query | Select) -> List[ModelT]:
+    async def fetch_all(self, query: Query | Select) -> Sequence[ModelT]:
         """Fetch filtered obj from database"""
         return (await self.session.scalars(query)).all()
 
     async def update(self, filters: Sequence, values: Dict) -> None:
         """Update instance in DB"""
         now = datetime.datetime.now(tz=None)
-        if hasattr(self.MODEL, 'updated'):
-            values['updated'] = now
+        if hasattr(self.MODEL, 'updated_at'):
+            values['updated_at'] = now
         query = update(self.MODEL).where(*filters).values(**values).execution_options(synchronize_session='fetch')
         await self.session.execute(query)
 
@@ -46,15 +46,16 @@ class BaseService(Generic[ModelT]):
         """Insert new obj to DB"""
         return await self.insert_obj(self.MODEL(**values))
 
-    async def insert_obj(self, obj: Base) -> Base:
+    async def insert_obj(self, obj: Base, commit: bool = True) -> Base:
         """Insert new obj to DB"""
         now = datetime.datetime.now(tz=None)
-        if hasattr(self.MODEL, 'created'):
-            obj.created = now
-        if hasattr(self.MODEL, 'updated'):
-            obj.updated = now
+        if hasattr(self.MODEL, 'created_at'):
+            obj.created_at = now
+        if hasattr(self.MODEL, 'updated_at'):
+            obj.updated_at = now
         self.session.add(obj)
-        await self.session.commit()
+        if commit:
+            await self.session.commit()
         return obj
 
     async def exist(self, filters: Sequence) -> bool:

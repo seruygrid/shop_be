@@ -2,9 +2,9 @@ from http import HTTPStatus
 
 from fastapi import APIRouter, Depends
 
-from shop_be.api.dependencies.services import get_product_type_service
+from shop_be.api.dependencies.services import get_type_service
 from shop_be.schemas.category.types import ProductTypeSchema
-from shop_be.services.product_type import ProductTypeService
+from shop_be.services.product_type import TypeService
 
 router = APIRouter()
 
@@ -16,7 +16,7 @@ router = APIRouter()
     response_model=list[ProductTypeSchema],
 )
 async def get_types(
-        type_service: ProductTypeService = Depends(get_product_type_service),
+        type_service: TypeService = Depends(get_type_service),
 ) -> list[ProductTypeSchema]:
     return await type_service.get_list()
 
@@ -29,6 +29,6 @@ async def get_types(
 )
 async def get_type_by_slug(
         slug: str,
-        type_service: ProductTypeService = Depends(get_product_type_service),
+        type_service: TypeService = Depends(get_type_service),
 ) -> ProductTypeSchema:
     return await type_service.get_by_slug(slug)

@@ -41,8 +41,8 @@ class CategoryPaginationRequest(BaseModel):
     page: int = 1
 
     def filter_query(self, query: Select) -> Select:
-        if self.search:
-            query = query.filter(Category.name == self.search)
+        # if self.search:
+        #     query = query.filter(Category.slug == self.search.split(':')[-1])
         if self.language:
             query = query.filter(Category.language == self.language)
         if self.order_by and self.sorted_by:

@@ -48,12 +48,12 @@ class ProductSchema(BaseModel):
     is_external: int
     external_product_url: str | None = None
     external_product_button_text: str | None = None
-    ratings: float
-    total_reviews: int
+    ratings: float | None
+    total_reviews: int | None = None
     rating_count: list[RatingCount]
     my_review: str | None = None
     in_wishlist: bool
-    blocked_dates: list[str] | None
+    blocked_dates: list[str] | None = None
     translated_languages: list[str]
     categories: list[ProductCategorySchema]
     shop: BaseShopSchema
@@ -80,8 +80,8 @@ class ProductPaginationRequest(BaseModel):
     page: int = 1
 
     def filter_query(self, query: Query) -> Query:
-        if self.search:
-            query = query.filter(Product.name == self.search)
+        # if self.search:
+        #     query = query.filter(Product.name == self.search)
         if self.language:
             query = query.filter(Product.language == self.language)
         if self.order_by and self.sorted_by:
