@@ -1,10 +1,11 @@
 from datetime import datetime
+from typing import Sequence
 
 from fastapi import Query
 from pydantic import BaseModel, Field
 from sqlalchemy import text
 
-from db_models.db_models import Product
+from db_models.db_models import Product, Type, Category
 from shop_be.schemas.category.category import ProductCategorySchema
 from shop_be.schemas.category.types import BaseProductTypeSchema
 from shop_be.schemas.image import ImageSchema
@@ -80,8 +81,19 @@ class ProductPaginationRequest(BaseModel):
     page: int = 1
 
     def filter_query(self, query: Query) -> Query:
-        # if self.search:
-        #     query = query.filter(Product.name == self.search)
+        if self.search:
+            params_keys = {
+                'name': lambda value: (Product.name == value),
+                'type.slug': lambda value: Product.type.any(Type.slug == value),
+                'categories.slug': lambda value: Product.categories.has(Category.slug == value),
+                'status': lambda value: (Product.status == value),
+                'shop_id': lambda value: (Product.shop_id == value),
+            }
+            search_params = self.search.split(';')
+            for param in search_params:
+                param_key, param_value = param.split(':')
+                if condition := params_keys.get(param_key):
+                    query = query.filter(condition(param_value))
         if self.language:
             query = query.filter(Product.language == self.language)
         if self.order_by and self.sorted_by:
@@ -90,4 +102,4 @@ class ProductPaginationRequest(BaseModel):
 
 
 class PaginatedProduct(Paginate):
-    data: list[ProductSchema]
+    data: Sequence[ProductSchema]
