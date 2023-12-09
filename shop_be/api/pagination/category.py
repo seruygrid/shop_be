@@ -1,4 +1,5 @@
 import math
+from typing import Sequence
 from urllib.parse import urlencode, urljoin
 
 from db_models.db_models import Category
@@ -7,7 +8,7 @@ from shop_be.schemas.category.category import PaginatedCategory, CategoryPaginat
 
 
 def paginate_categories(
-        data: list[Category],
+        data: Sequence[Category],
         total_count: int,
         query_params: CategoryPaginationRequest,
 ) -> PaginatedCategory:

@@ -1,12 +1,14 @@
 from datetime import datetime
+from typing import Sequence
 
 from fastapi import Query
 from pydantic import BaseModel, HttpUrl, Field
 
 from db_models.db_models import Shop
+from shop_be.schemas.address import AddressSchema
+from shop_be.schemas.customer.customer import BaseCustomerSchema
 from shop_be.schemas.image import ImageSchema
 from shop_be.schemas.paginate import Paginate
-from shop_be.schemas.shop.owner import ShopOwnerSchema
 
 
 class LocationSchema(BaseModel):
@@ -31,17 +33,6 @@ class ShopSettingsSchema(BaseModel):
         from_attributes = True
 
 
-class AddressSchema(BaseModel):
-    zip: str
-    city: str
-    state: str
-    country: str
-    street_address: str
-
-    class Config:
-        from_attributes = True
-
-
 class BaseShopSchema(BaseModel):
     id: int
     owner_id: int
@@ -51,8 +42,8 @@ class BaseShopSchema(BaseModel):
     is_active: bool
     cover_image: ImageSchema
     logo: ImageSchema
-    address: AddressSchema
-    settings: ShopSettingsSchema
+    address: AddressSchema | None
+    settings: ShopSettingsSchema | None
     created_at: datetime
     updated_at: datetime
 
@@ -63,7 +54,7 @@ class BaseShopSchema(BaseModel):
 class ShopSchema(BaseShopSchema):
     orders_count: int = 100
     products_count: int = 100
-    owner: ShopOwnerSchema
+    owner: BaseCustomerSchema
 
 
 class ShopPaginationRequest(BaseModel):
@@ -81,4 +72,24 @@ class ShopPaginationRequest(BaseModel):
 
 
 class PaginatedShops(Paginate):
-    data: list[ShopSchema]
+    data: Sequence[ShopSchema]
+
+
+class ShopSettings(BaseModel):
+    socials: list[dict]
+    contact: str
+    location: LocationSchema | dict
+    website: str
+
+
+class CreateShopSchema(BaseModel):
+    name: str
+    address: AddressSchema
+    description: str
+    cover_image: ImageSchema
+    logo: ImageSchema
+    settings: ShopSettings
+
+
+class ApproveShopRequest(BaseModel):
+    id: int

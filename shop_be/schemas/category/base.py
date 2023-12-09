@@ -10,11 +10,10 @@ class BaseCategorySchema(BaseModel):
     name: str
     slug: str
     icon: str | None = None
-    image: list[ImageSchema] = []
+    image: ImageSchema | None
     details: str | None = None
     language: str
     translated_languages: list[str]
-    type_id: int
     created_at: datetime
     updated_at: datetime
     deleted_at: str | None = None

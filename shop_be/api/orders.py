@@ -3,12 +3,13 @@ from http import HTTPStatus
 from fastapi import APIRouter, Depends
 
 from db_models.db_models import Order
+from shop_be.api.dependencies.logger import LoggingRoute
 from shop_be.api.dependencies.services import get_order_service, get_product_service
 from shop_be.schemas.order.order import OrderVerifyRequest, OrderVerifyResponse, CreateOrderRequest, OrderInfo
 from shop_be.services.order import OrderService
 from shop_be.services.product import ProductService
 
-router = APIRouter()
+router = APIRouter(route_class=LoggingRoute)
 
 
 @router.post(

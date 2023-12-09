@@ -3,7 +3,9 @@ from http import HTTPStatus
 
 from fastapi import APIRouter
 
-router = APIRouter()
+from shop_be.api.dependencies.logger import LoggingRoute
+
+router = APIRouter(route_class=LoggingRoute)
 
 
 @router.get(

@@ -17,7 +17,7 @@ class LoggingRoute(APIRoute):
         """Get dict body from request"""
         try:
             return await request.json()
-        except JSONDecodeError:
+        except (JSONDecodeError, UnicodeDecodeError):
             return {}
 
     def get_route_handler(self) -> Callable:

@@ -1,4 +1,5 @@
 import math
+from typing import Sequence
 from urllib.parse import urlencode, urljoin
 
 from db_models.db_models import Shop
@@ -7,7 +8,7 @@ from shop_be.schemas.shop.shop import ShopPaginationRequest, PaginatedShops
 
 
 def paginate_shops(
-        data: list[Shop],
+        data: Sequence[Shop],
         total_count: int,
         query_params: ShopPaginationRequest,
 ) -> PaginatedShops:

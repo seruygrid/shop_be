@@ -35,11 +35,12 @@ class BaseService(Generic[ModelT]):
         query = update(self.MODEL).where(*filters).values(**values).execution_options(synchronize_session='fetch')
         await self.session.execute(query)
 
-    async def update_obj(self, obj: ModelT, values: Dict) -> ModelT:
+    async def update_obj(self, obj: ModelT, values: Dict, commit: bool = True) -> ModelT:
         """Update obj in DB and return obj"""
         await self.update(filters=(self.MODEL.id == obj.id,), values=values)
         obj.__dict__.update(values)
-        await self.session.commit()
+        if commit:
+            await self.session.commit()
         return obj
 
     async def insert(self, values: Dict) -> Base:

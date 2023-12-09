@@ -6,9 +6,10 @@ from sqlalchemy import select
 
 from shop_be import __version__
 from shop_be.api.dependencies.db import get_db_session
+from shop_be.api.dependencies.logger import LoggingRoute
 from shop_be.schemas.base import HealthSchema, VersionSchema
 
-router = APIRouter()
+router = APIRouter(route_class=LoggingRoute)
 
 
 @router.get(

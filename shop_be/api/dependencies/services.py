@@ -3,15 +3,11 @@ from sqlalchemy.ext.asyncio import AsyncSession
 
 from shop_be.api.dependencies.db import get_db_session
 from shop_be.services.category import CategoryService
+from shop_be.services.customer import CustomerService
+from shop_be.services.image import ImageService
 from shop_be.services.order import OrderService
 from shop_be.services.product import ProductService
-from shop_be.services.product_type import TypeService
 from shop_be.services.shop import ShopService
-
-
-def get_type_service(session: AsyncSession = Depends(get_db_session)) -> 'TypeService':
-    """Get TypeService instance"""
-    return TypeService(session)
 
 
 def get_product_service(session: AsyncSession = Depends(get_db_session)) -> 'ProductService':
@@ -32,3 +28,13 @@ def get_shop_service(session: AsyncSession = Depends(get_db_session)) -> 'ShopSe
 def get_order_service(session: AsyncSession = Depends(get_db_session)) -> 'OrderService':
     """Get OrderService instance"""
     return OrderService(session)
+
+
+def get_customer_service(session: AsyncSession = Depends(get_db_session)) -> 'CustomerService':
+    """Get CustomerService instance"""
+    return CustomerService(session)
+
+
+def get_image_service(session: AsyncSession = Depends(get_db_session)) -> 'ImageService':
+    """Get ImageService instance"""
+    return ImageService(session)

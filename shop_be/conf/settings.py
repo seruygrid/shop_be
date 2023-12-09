@@ -13,9 +13,10 @@ class Env(str, Enum):
 
 class Settings(BaseSettings):
     PORT: int = 4000
-    ALLOWED_ORIGINS: str = 'http://localhost http://localhost:3003'
+    ALLOWED_ORIGINS: str = 'http://localhost http://localhost:3002'
     DEBUG: bool = True
     ENV: Env = Env.LOCAL
+    LOG_LEVEL: str = 'INFO'
 
     DB_PORT: int = 5432
     DB_USER: str = 'g50'
@@ -25,6 +26,12 @@ class Settings(BaseSettings):
     DB_DRIVER: str = 'postgresql+asyncpg'
 
     WEB_URL: AnyHttpUrl = 'https://example.com'
+
+    AWS_DEFAULT_REGION: str = 'eu-west-1'
+    COGNITO_POOL_ID: str = 'eu-west-1_eTaEzgpNJ'
+    S3_BUCKET_NAME: str = 'harvest-images'
+    COGNITO_CLIENT_ID: str = '3t5hbnb5fp41sao37prmgpo8pm'
+    COGNITO_CLIENT_SECRET: str = 'v1eoabj26u4mbojq3qifuagp9is0uq6vsg056bu6ab9amas41cu'
 
     @property
     def sqlalchemy_database_uri(self) -> str:
